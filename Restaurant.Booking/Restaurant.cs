@@ -25,9 +25,15 @@ namespace Restaurant.Booking
             Console.WriteLine(table is null ? $"К сожалению, сейчас все столики заняты" : $"Готово! Ваш столик номер {table.Id}");
         }
 
-        internal void BookFreeTableAsync(int v)
+        internal void BookFreeTableAsync(int countOfPersons)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Добрый день! Подождите секунду я подберу столик и подтвержу Вашу бронь, а Вам придет уведомление");
+            Task.Run( async () => {
+                                    var table = _tables.FirstOrDefault(t => t.SeatsCount > countOfPersons && t.State == State.Free);
+                                    await Task.Delay( 5000 );
+                                    table?.SetState( State.Booked );
+                                    Console.WriteLine(table is null ? $"УВЕДОМЛЕНИЕ: К сожалению, сейчас все столики заняты" : $"УВЕДОМЛЕНИЕ: Готово! Ваш столик номер {table.Id}");
+            });
         }
     }
 }
