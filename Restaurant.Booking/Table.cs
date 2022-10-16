@@ -8,6 +8,7 @@ namespace Restaurant.Booking
 {
     public class Table
     {
+        private readonly object _lock = new object();
         private readonly Random random = new Random();
         public int Id { get;  } 
         public State State { get; private set; }    
@@ -20,12 +21,22 @@ namespace Restaurant.Booking
         SeatsCount = random.Next(2,5);
     }
 
-    public bool SetState(State state)
+    public bool SetStateAsync(State state)
     { 
-        if (State == state) return false;
-        State = state;
-        return true;
+        lock (_lock) { 
+                        if (State == state) return false;
+                        State = state;
+                        return true;
+        }
     }
+
+        public bool SetState(State state)
+        {
+          
+                if (State == state) return false;
+                State = state;
+                return true;
+        }       
 
     }
 }
