@@ -1,53 +1,33 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
 
-namespace Restaurant.Booking
+namespace Restaraunt.Booking
 {
-    internal class Program
+    internal static class Program
     {
-        static void Main(string[] args)
+        private static async Task Main(string[] args)
         {
-            Console.OutputEncoding = System.Text.Encoding.UTF8; 
-            var rest = new Restaurant();
-            int choice = 20 * 1000;
-          do
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+            var rest = new Restaurant.Booking.Restaurant();
+            while (true)
             {
-                rest.BookRemovalTableAsync(20000);
+                await Task.Delay(10000);
+
+                //считаем что если уж позвонили, то столик забронировать хотим
                 Console.WriteLine("Привет! Желаете забронировать столик?");
-                Console.WriteLine("0 - Я здесь закончил и ухожу");
-                Console.WriteLine("1 - Мы уведомим Вас по СМС (асинхронно)");
-                Console.WriteLine("2 - Подождите на линии, мы Вас оповестим (синхронно)");
-                Console.WriteLine("3 - Я передумал - снимите бронь");
 
-                if (int.TryParse(Console.ReadLine(), out choice) )
-                {
-                    var stopWatch = new Stopwatch();
-                    stopWatch.Start();         
-                    
-                    switch (choice)
-                    {
-                        case 1:           rest.BookFreeTableAsync(1);
-                             break;
-                        case 2:           rest.BookFreeTable(1);
-                             break;           
-                        case 3:
-                                           Console.Write("Введите номер Вашего столика: ");
-                                           rest.BookRemovalTable(Convert.ToInt32(System.Console.ReadLine()));
-                                break;
-                       default:           choice = 0; 
-                             break;
-                    }
-                    
-                    Console.WriteLine("Спасибо за Ваше обращение!");
-                    stopWatch.Stop();
-                    var ts = stopWatch.Elapsed;
-                    Console.WriteLine($"{ts.Seconds:00}:{ts.Milliseconds:00}");
-                }
-                else choice = 0;
+                var stopWatch = new Stopwatch();
+                stopWatch.Start(); //замерим потраченное нами время на бронирование,
+                                   //ведь наше время - самое дорогое что у нас есть
 
-             } while (choice != 0);
+                rest.BookFreeTableAsync(1); //забронируем с ответом по смс
 
-            Console.ReadLine();
+                Console.WriteLine("Спасибо за Ваше обращение!"); //клиента всегда нужно порадовать благодарностью
+                stopWatch.Stop();
+                var ts = stopWatch.Elapsed;
+                Console.WriteLine($"{ts.Seconds:00}:{ts.Milliseconds:00}"); //выведем потраченное нами время
+            }
         }
-        
     }
 }

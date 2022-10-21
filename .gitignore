@@ -4,3 +4,7 @@ main/bin/
 main/obj/
 Restaurant.Booking/bin/
 Restaurant.Booking/obj/
+Messaging/obj/
+Messaging/bin/
+Restaurant.Notification/obj/
+Restaurant.Notification/bin/

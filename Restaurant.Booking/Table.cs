@@ -1,42 +1,34 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Restaurant.Booking
+namespace Lesson1
 {
     public class Table
     {
-        private readonly object _lock = new object();
-        private readonly Random random = new Random();
-        public int Id { get;  } 
-        public State State { get; private set; }    
-        public int SeatsCount { get;}    
+        public State State { get; private set; }
+        public int SeatsCount { get; }
+        public int Id { get; }
 
-    public Table(int id)
-    {         
-        Id = id;
-        State = State.Free;
-        SeatsCount = random.Next(2,5);
-    }
-
-    public bool SetStateAsync(State state)
-    { 
-        lock (_lock) { 
-                        if (State == state) return false;
-                        State = state;
-                        return true;
+        public Table(int id)
+        {
+            Id = id; //в учебном примере просто присвоим id при вызове
+            State = State.Free; // новый стол всегда свободен
+            SeatsCount = Random.Next(2, 5); //пусть количество мест за каждым столом будет случайным, от 2х до 5ти
         }
-    }
 
         public bool SetState(State state)
         {
-          
-                if (State == state) return false;
+            lock (_lock)
+            {
+                if (state == State)
+                    return false;
+
                 State = state;
                 return true;
-        }       
+            }
+        }
+
+        private readonly object _lock = new object();
+        private static readonly Random Random = new();
 
     }
 }

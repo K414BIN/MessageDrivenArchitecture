@@ -1,59 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using Lesson1;
+using Messaging;
 
 namespace Restaurant.Booking
 {
     public class Restaurant
     {
-        private readonly List<Table> _tables = new ();   
+        private readonly List<Table> _tables = new();
+
+        private readonly Producer _producer =
+            new("BookingNotification", "localhost");
+
         public Restaurant()
-        { 
-            for (int i=1;i<=10;i++)
-            { 
+        {
+            for (ushort i = 1; i <= 10; i++)
+            {
                 _tables.Add(new Table(i));
             }
         }
 
-        internal void BookRemovalTableAsync(int time_period)
+        public void BookFreeTableAsync(int countOfPersons)
         {
-            Task.Run(async () => {
+            Console.WriteLine("Подождите секунду я подберу столик и подтвержу вашу бронь," +
+                              "Вам придет уведомление");
+            Task.Run(async () =>
+            {
+                var table = _tables.FirstOrDefault(t => t.SeatsCount > countOfPersons
+                                                        && t.State == State.Free);
+                await Task.Delay(1000 * 5); //у нас нерасторопные менеджеры, 5 секунд они находятся в поисках стола
+                table?.SetState(State.Booked);
 
-                var table = _tables.FirstOrDefault(item => item.State == State.Booked);
-                await Task.Delay(time_period);
-                Console.WriteLine(table is null ? $"УВЕДОМЛЕНИЕ: Cейчас все столики свободны" : $"УВЕДОМЛЕНИЕ: Со столика {table.Id} снята бронь! ");
-                table?.SetStateAsync(State.Free);
-            });
-        }
-
-        internal void BookRemovalTable(int table_id)
-        {
-            var table = _tables.FirstOrDefault( item => item.Id == table_id );
-            if (table.State == State.Booked)   {
-                Console.WriteLine($"Со столика {table.Id} снята бронь! ");
-                table.SetState(State.Free);
-            }
-        }
-
-        internal void BookFreeTable(int countOfPersons)
-        {
-            Console.WriteLine("Добрый день! Подождите секунду я подберу столик и подтвержу Вашу бронь, оставайтесь на линии..."); 
-            var table = _tables.FirstOrDefault(t => t.SeatsCount > countOfPersons && t.State == State.Free);
-            Thread.Sleep(1000 * 5);
-            table?.SetState(State.Booked);
-            Console.WriteLine(table is null ? $"К сожалению, сейчас все столики заняты" : $"Готово! Ваш столик номер {table.Id}");
-        }
-
-        internal void BookFreeTableAsync(int countOfPersons)
-        {
-            Console.WriteLine("Добрый день! Подождите секунду я подберу столик и подтвержу Вашу бронь, а Вам придет уведомление");
-            Task.Run( async () => {
-                                    var table = _tables.FirstOrDefault(t => t.SeatsCount > countOfPersons && t.State == State.Free);
-                                    await Task.Delay( 5000 );
-                                    table?.SetStateAsync( State.Booked );
-                                    Console.WriteLine(table is null ? $"УВЕДОМЛЕНИЕ: К сожалению, сейчас все столики заняты" : $"УВЕДОМЛЕНИЕ: Готово! Ваш столик номер {table.Id}");
+                _producer.Send(table is null
+                    ? $"УВЕДОМЛЕНИЕ: К сожалению, сейчас все столики заняты"
+                    : $"УВЕДОМЛЕНИЕ: Готово! Ваш столик номер {table.Id}");
             });
         }
     }
