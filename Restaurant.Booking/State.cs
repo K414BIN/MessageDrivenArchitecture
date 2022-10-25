@@ -1,4 +1,4 @@
-﻿namespace Lesson1
+﻿namespace Restaurant.Booking
 {
     public enum State
     {

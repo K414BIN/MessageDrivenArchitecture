@@ -11,7 +11,7 @@ namespace Messaging
 
         private readonly IConnection _connection;
         private readonly IModel _channel;
-
+        
         public Consumer(string queueName, string hostName)
         {
             _queueName = queueName;
@@ -29,17 +29,17 @@ namespace Messaging
             _channel = _connection.CreateModel();
         }
 
-        public void Receive(EventHandler<BasicDeliverEventArgs> receiveCallback)
+        public void Receive (EventHandler<BasicDeliverEventArgs> receiveCallback)
         {
             _channel.ExchangeDeclare(exchange: "direct_exchange",
                 type: "direct"); // объявляем обменник
-
+            
             _channel.QueueDeclare(queue: _queueName,
                 durable: false,
                 exclusive: false,
                 autoDelete: false,
                 arguments: null); //объявляем очередь
-
+            
             _channel.QueueBind(queue: _queueName,
                 exchange: "direct_exchange",
                 routingKey: _queueName); //биндим

@@ -28,7 +28,7 @@ namespace Messaging
             };
             using var connection = factory.CreateConnection();
             using var channel = connection.CreateModel();
-
+            
             channel.ExchangeDeclare(
                 "direct_exchange",
                 "direct",
@@ -36,7 +36,7 @@ namespace Messaging
                 false,
                 null
             );
-
+            
             var body = Encoding.UTF8.GetBytes(message); // формируем тело сообщения для отправки
 
             channel.BasicPublish(exchange: "direct_exchange",
