@@ -1,13 +1,13 @@
-﻿using System;
-using GreenPipes;
+using System;
 using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Restaurant.Booking.Consumers;
+using Restaurant.Kitchen.Consumers;
+using GreenPipes;
 
-namespace Restaurant.Booking
+namespace Restaurant.Kitchen
 {
-    public static class Program
+    public class Program
     {
         public static void Main(string[] args)
         {
@@ -15,28 +15,27 @@ namespace Restaurant.Booking
             CreateHostBuilder(args).Build().Run();
         }
 
-        private static IHostBuilder CreateHostBuilder(string[] args) =>
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddMassTransit(x =>
                     {
-                        x.AddConsumer<RestaurantBookingRequestConsumer>()
+                        x.AddConsumer<KitchenBookingRequestedConsumer>(
+                            configurator =>
+                            {
+   
+                            })
+                            .Endpoint(e =>
+                            {
+                                e.Temporary = true;
+                            }); ;
+
+                        x.AddConsumer<KitchenBookingRequestFaultConsumer>()
                             .Endpoint(e =>
                             {
                                 e.Temporary = true;
                             });
-
-                        x.AddConsumer<BookingRequestFaultConsumer>()
-                            .Endpoint(e =>
-                            {
-                                e.Temporary = true;
-                            });
-
-                        x.AddSagaStateMachine<RestaurantBookingSaga, RestaurantBooking>()
-                            .Endpoint(e => e.Temporary = true)
-                            .InMemoryRepository();
-
                         x.AddDelayedMessageScheduler();
 
                         x.UsingRabbitMq((context, cfg) =>
@@ -45,16 +44,11 @@ namespace Restaurant.Booking
                             cfg.UseInMemoryOutbox();
                             cfg.ConfigureEndpoints(context);
                         });
-
                     });
 
-                    services.AddMassTransitHostedService();
+                    services.AddSingleton<Manager>();
 
-                    services.AddTransient<RestaurantBooking>();
-                    services.AddTransient<RestaurantBookingSaga>();
-                    services.AddTransient<Restaurant>();
-
-                    services.AddHostedService<Worker>();
+                    services.AddMassTransitHostedService(true);
                 });
     }
 }
