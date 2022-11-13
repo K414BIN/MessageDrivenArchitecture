@@ -3,8 +3,6 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
-	<ItemGroup>
-		<ProjectReference Include="..\Restaurant.Messages\Restaurant.Messages.csproj" />
-	</ItemGroup>
+	
 
 </Project>
