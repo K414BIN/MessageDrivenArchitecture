@@ -10,5 +10,7 @@ Restaurant.Notification/obj/
 Restaurant.Notification/bin/
 Restaurant.Messages/bin/
 Restaurant.Messages/obj/
-Restaurant.Kitchen/obj/
 Restaurant.Kitchen/bin/
+Restaurant.Kitchen/obj/
+Restaurant.Tests/bin/
+Restaurant.Tests/obj/

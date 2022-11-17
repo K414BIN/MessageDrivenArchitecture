@@ -3,26 +3,24 @@ using System.Threading.Tasks;
 using MassTransit;
 using Restaurant.Messages;
 
-namespace Restaurant.Kitchen.Consumers
+namespace Restaurant.Kitchen.Consumers;
+
+public class KitchenBookingRequestedConsumer : IConsumer<IBookingRequest>
 {
-    internal class KitchenBookingRequestedConsumer : IConsumer<IBookingRequest>
+    private readonly Manager _manager;
+    private readonly IBus _bus;
+
+    public KitchenBookingRequestedConsumer(Manager manager, IBus bus)
     {
-        private readonly Manager _manager;
+        _manager = manager;
+        _bus = bus;
+    }
 
-        public KitchenBookingRequestedConsumer(Manager manager)
-        {
-            _manager = manager;
-        }
+    public async Task Consume(ConsumeContext<IBookingRequest> context)
+    {
 
-        public async Task Consume(ConsumeContext<IBookingRequest> context)
-        {
-            Console.WriteLine($"[OrderId: {context.Message.OrderId} CreationDate: {context.Message.CreationDate}]");
-            Console.WriteLine("Trying time: " + DateTime.Now);
-
-            await Task.Delay(5000);
-
-            if (_manager.CheckKitchenReady(context.Message.OrderId, context.Message.PreOrder))
-                await context.Publish<IKitchenReady>(new KitchenReady(context.Message.OrderId, true));
-        }
+        await Task.Delay(500000);
+        if (_manager.CheckKitchenReady(context.Message.OrderId, context.Message.PreOrder))
+            await _bus.Publish<IKitchenReady>(new KitchenReady(context.Message.OrderId, true));
     }
 }
