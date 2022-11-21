@@ -25,8 +25,7 @@ public class Startup
             var auditStore = serviceProvider.GetService<IMessageAuditStore>();
 
             x.AddConsumer<RestaurantBookingRequestConsumer>();
-            //   x.AddConsumer<BookingRequestFaultConsumer>();
-
+         
             x.AddSagaStateMachine<RestaurantBookingSaga, RestaurantBooking>()
                 .InMemoryRepository();
 

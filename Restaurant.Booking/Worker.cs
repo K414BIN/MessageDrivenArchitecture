@@ -26,20 +26,19 @@ public class Worker : BackgroundService
 
         Console.WriteLine(s[^4] + s[3..5] + s[^8..^6]);
 
-
         Console.OutputEncoding = Encoding.UTF8;
+
         while (!stoppingToken.IsCancellationRequested)
         {
             await Task.Delay(1000, stoppingToken);
+
             Console.WriteLine("Привет! Желаете забронировать столик?");
+
             var b = Guid.NewGuid();
 
-            var dateTime = DateTime.Now;
+            var dateTime = DateTime.Now; 
 
-            var topology = _bus.GetRabbitMqHostTopology();
-
-            await _bus.Publish(new BookingRequest(b, Guid.NewGuid(), null, dateTime),
-                stoppingToken);
+            await _bus.Publish(new BookingRequest(b, Guid.NewGuid(), null, dateTime),stoppingToken);
         }
     }
 }

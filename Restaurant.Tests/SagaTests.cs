@@ -17,6 +17,7 @@ namespace Restaurant.Tests;
 public class SagaTests
 {
     [OneTimeSetUp]
+    [Obsolete]
     public async Task Init()
     {
         _provider = new ServiceCollection()
@@ -77,8 +78,7 @@ public class SagaTests
 
         Assert.That(saga, Is.Not.Null);
         Assert.That(saga.ClientId, Is.EqualTo(clientId));
-        Assert.That(await _harness.Published.Any<ITableBooked>());
-        // Assert.That(await _harness.Published.Any<IKitchenReady>());
+        Assert.That(await _harness.Published.Any<ITableBooked>());  
         Assert.That(await _harness.Published.Any<INotify>());
         Assert.That(saga.CurrentState, Is.EqualTo(3));
 

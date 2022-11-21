@@ -1,5 +1,4 @@
 ﻿using System;
-using Automatonymous;
 using MassTransit;
 using Restaurant.Booking.Consumers;
 using Restaurant.Messages;
@@ -8,6 +7,7 @@ namespace Restaurant.Booking;
 
 public sealed class RestaurantBookingSaga : MassTransitStateMachine<RestaurantBooking>
 {
+    [Obsolete]
     public RestaurantBookingSaga()
     {
         InstanceState(x => x.CurrentState);
@@ -26,12 +26,7 @@ public sealed class RestaurantBookingSaga : MassTransitStateMachine<RestaurantBo
                 x.CorrelateById(context => context.Message.OrderId));
 
         CompositeEvent(() => BookingApproved,
-            x => x.ReadyEventStatus, KitchenReady, TableBooked);
-
-        // Event(() => BookingRequestFault,
-        //     x => 
-        //         x.CorrelateById(m => m.Message.Message.OrderId)
-        //             .SelectId(m => m.Message.Message.OrderId));
+            x => x.ReadyEventStatus, KitchenReady, TableBooked);      
 
         Schedule(() => BookingExpired,
             x => x.ExpirationId, x =>
@@ -78,10 +73,7 @@ public sealed class RestaurantBookingSaga : MassTransitStateMachine<RestaurantBo
     public State AwaitingBookingApproved { get; private set; }
     public Event<IBookingRequest> BookingRequested { get; private set; }
     public Event<ITableBooked> TableBooked { get; private set; }
-    public Event<IKitchenReady> KitchenReady { get; private set; }
-
-    //      public Event<Fault<IBookingRequest>> BookingRequestFault { get; private set; }
-
+    public Event<IKitchenReady> KitchenReady { get; private set; }    
     public Schedule<RestaurantBooking, IBookingExpire> BookingExpired { get; private set; }
     public Event BookingApproved { get; private set; }
 }
