@@ -2,3 +2,15 @@
 .vs/
 main/bin/
 main/obj/
+Restaurant.Booking/bin/
+Restaurant.Booking/obj/
+Messaging/obj/
+Messaging/bin/
+Restaurant.Notification/obj/
+Restaurant.Notification/bin/
+Restaurant.Messages/bin/
+Restaurant.Messages/obj/
+Restaurant.Kitchen/bin/
+Restaurant.Kitchen/obj/
+Restaurant.Tests/bin/
+Restaurant.Tests/obj/

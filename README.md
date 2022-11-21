@@ -1,3 +1,1 @@
-##Message-driven architecture
-
-#GeekBrains course 2022.
+###Итоговый проект по курсу "Message-driven architecture"
